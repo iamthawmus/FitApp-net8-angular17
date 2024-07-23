@@ -99,7 +99,10 @@
                     </form>
                 </tab>
                 <tab heading="Edit photos">
-                    <h4>Photo Edit goes here</h4>
+                    <app-photo-editor 
+                        [member]="member"
+                        (memberChange)="onMemberChange($event)"
+                        ></app-photo-editor>
                 </tab>
                 <tab heading="Messages">
                     <h4>Messages will go here</h4>
