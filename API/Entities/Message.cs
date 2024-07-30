@@ -4,7 +4,7 @@ public class Message
 {
     public int Id { get; set; }
     public required string SenderUsername { get; set; }
-    public required string RecipientUserName { get; set; }
+    public required string RecipientUsername { get; set; }
     public required string Content { get; set; }
     public DateTime? DateRead { get; set; }
     public DateTime MessageSent { get; set; } = DateTime.UtcNow;
