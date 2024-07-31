@@ -18,8 +18,6 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
     {
         if(await UserExists(registerDto.Username)) return BadRequest("Username is taken.");
 
-        using var hmac = new HMACSHA512();
-
         var user = mapper.Map<AppUser>(registerDto);
         user.UserName = registerDto.Username.ToLower();
         var results = await userManager.CreateAsync(user, registerDto.Password);
