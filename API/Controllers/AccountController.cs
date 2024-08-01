@@ -43,6 +43,10 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
             x.NormalizedUserName == loginDto.Username.ToUpper());
 
         if(user == null || user.UserName == null) return Unauthorized("Invalid username");
+        
+        if(user.UserRoles.Count == 0){
+            var result = await userManager.AddToRolesAsync(user, ["Member"]);
+        }
 
         return new UserDto
         {
