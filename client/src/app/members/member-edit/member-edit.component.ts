@@ -3,16 +3,17 @@ import { AccountService } from '../../_services/account.service';
 import { MembersService } from '../../_services/members.service';
 import { Member } from '../../_models/member';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { PhotoEditorComponent } from "../photo-editor/photo-editor.component";
 import { TimeagoModule, TimeagoPipe } from 'ngx-timeago';
 import { DatePipe } from '@angular/common';
+import { MemberEditPasswordComponent } from "../../member-edit-password/member-edit-password.component";
 
 @Component({
   selector: 'app-member-edit',
   standalone: true,
-  imports: [TabsModule, FormsModule, PhotoEditorComponent, TimeagoModule, DatePipe],
+  imports: [TabsModule, FormsModule, PhotoEditorComponent, TimeagoModule, DatePipe, MemberEditPasswordComponent],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css'
 })

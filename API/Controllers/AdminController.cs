@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using API.Dto;
+using API.Entities;
 using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -101,5 +102,21 @@ public class AdminController(UserManager<AppUser> userManager, IUnitOfWork unitO
         await unitOfWork.Complete();
 
         return Ok();
+    }
+
+    [HttpPut("update-password")]
+    public async Task<ActionResult> UpdatePassword(UpdatePasswordDto updatePasswordDto)
+    {
+        if(string.IsNullOrEmpty(updatePasswordDto.OldPassword) || string.IsNullOrEmpty(updatePasswordDto.NewPassword)) return BadRequest("Password cannot be empty");
+
+        var user = await userManager.FindByNameAsync(updatePasswordDto.Username);
+
+        if(user == null) return BadRequest("User not found");
+
+        var isPassword = await userManager.CheckPasswordAsync(user, updatePasswordDto.OldPassword);
+
+        if(!isPassword) return BadRequest("Password is incorrect");
+
+        return Ok(await userManager.ChangePasswordAsync(user, updatePasswordDto.OldPassword, updatePasswordDto.NewPassword));
     }
 }

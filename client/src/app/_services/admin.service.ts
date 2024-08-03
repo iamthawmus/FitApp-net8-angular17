@@ -30,4 +30,8 @@ export class AdminService {
   rejectPhoto(id: number){
     return this.http.post(this.baseUrl + 'admin/reject-photo/' + id, {});
   }
+
+  updatePassword(modal: any){
+    return this.http.put(this.baseUrl + 'admin/update-password', modal);
+  }
 }
