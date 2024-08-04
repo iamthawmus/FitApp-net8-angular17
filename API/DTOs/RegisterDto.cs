@@ -16,4 +16,7 @@ public class RegisterDto
     [Required]
     [StringLength(50, MinimumLength = 4)]
     public string Password {get; set;} = string.Empty;
+
+    [Required]
+    public string? RegistrationKey {get; set;}
 }

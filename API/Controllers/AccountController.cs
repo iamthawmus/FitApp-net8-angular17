@@ -11,11 +11,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper) : BaseApiController
+public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper, IConfiguration config) : BaseApiController
 {
     [HttpPost("register")] // account/register
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
+        var registrationKey = config["RegistrationKey"];
+        var formatKey = config["FormatKey"];
+        if(string.IsNullOrEmpty(registrationKey) || string.IsNullOrEmpty(formatKey)) return StatusCode(500, "Registration is disabled");
+
+        var date = DateTime.Now.ToString(formatKey);
+        var key = registrationKey + date;
+        
+        if(registerDto.RegistrationKey != key) return BadRequest("RegistrationKey is Incorrect");
+
         if(await UserExists(registerDto.Username)) return BadRequest("Username is taken.");
 
         var user = mapper.Map<AppUser>(registerDto);
