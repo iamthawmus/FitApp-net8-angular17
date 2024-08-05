@@ -19,4 +19,8 @@ public class RegisterDto
 
     [Required]
     public string? RegistrationKey {get; set;}
+    [Required]
+    public string? Email { get; set; }
+    [Required]
+    public string? ClientURI { get; set; }
 }

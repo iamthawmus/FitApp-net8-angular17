@@ -4,14 +4,19 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using API.Resend.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper, IConfiguration config) : BaseApiController
+public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, 
+    IMapper mapper, IConfiguration config, IEmailService emailService, IUnitOfWork unitOfWork) : BaseApiController
 {
     [HttpPost("register")] // account/register
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -29,10 +34,27 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
 
         var user = mapper.Map<AppUser>(registerDto);
         user.UserName = registerDto.Username.ToLower();
+
+        if(String.IsNullOrEmpty(user.Email)) return BadRequest("Email cannot be empty.");
+        if(String.IsNullOrEmpty(registerDto.ClientURI)) return BadRequest("ClientURI is null");
+
         var results = await userManager.CreateAsync(user, registerDto.Password);
 
         if(!results.Succeeded) 
             return BadRequest(results.Errors);
+
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var param = new Dictionary<string, string?>
+        {
+            {"token", token },
+            {"userId", user.Id.ToString() }
+        };  
+        var callbackUrl = QueryHelpers.AddQueryString(registerDto.ClientURI, param);
+
+        await emailService.SendEmailAsync(user.Email, 
+            "Confirm your account " + user.UserName, 
+            "Please confirm your account by clicking this link: <a href=\"" 
+                                            + callbackUrl + "\">link</a>");
 
         return new UserDto
         {
@@ -72,5 +94,27 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
     }
     private async Task<bool> UserExists(string username){
         return await userManager.Users.AnyAsync(x => x.NormalizedUserName == username.ToUpper());
+    }
+
+    [HttpGet("ConfirmEmail")]
+    [AllowAnonymous]
+    public async Task<ActionResult> ConfirmEmail(int userId, string token)
+    {
+        if (token == null)
+        {
+            return BadRequest("Error confirming email address");
+        }
+        var user = await unitOfWork.UserRepository.GetUserByIdAsync(userId);
+        if(user == null)
+        {
+            return BadRequest("Error finding user");
+        }
+        var result = await userManager.ConfirmEmailAsync(user, token);
+        if (result.Succeeded)
+        {
+            return Ok();
+        }
+        
+        return BadRequest("Could not confirm email address");
     }
 }

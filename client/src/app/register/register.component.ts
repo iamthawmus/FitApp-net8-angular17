@@ -7,6 +7,7 @@ import { DatePickerComponent } from "../_forms/date-picker/date-picker.component
 import { Router } from '@angular/router';
 import { matchValues } from '../_helpers/custom-validators';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -39,18 +40,28 @@ export class RegisterComponent implements OnInit {
       dateOfBirth: ['', Validators.required],
       city: ['', Validators.required],
       country: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
       confirmPassword: ['', [Validators.required, matchValues('password')]],
-      registrationKey: ['', Validators.required]
+      email: ['', [Validators.required, Validators.email]],
+      confirmEmail: ['', [Validators.required, Validators.email]],
+      registrationKey: ['', Validators.required],
+      clientURI: ['']
     });
     this.registerForm.controls['password'].valueChanges.subscribe({
       next: () => this.registerForm.controls['confirmPassword'].updateValueAndValidity()
+    });
+    this.registerForm.controls['email'].valueChanges.subscribe({
+      next: () => this.registerForm.controls['confirmEmail'].updateValueAndValidity()
     });
   }
 
   register() {
     const dob = this.getDateOnly(this.registerForm.get('dateOfBirth')?.value);
-    this.registerForm.patchValue({dateOfBirth: dob});
+    const clientUri = environment.confirmEmail;
+    this.registerForm.patchValue({
+      dateOfBirth: dob, 
+      clientURI: clientUri
+    });
     this.accountService.register(this.registerForm.value).subscribe({
       next: _ => {
         this.router.navigateByUrl('/members');
