@@ -1,6 +1,8 @@
 ﻿using API.Data;
 using API.Helpers;
 using API.Interfaces;
+using API.Resend;
+using API.Resend.Models;
 using API.Services;
 using API.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +26,20 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IPhotoRepository, PhotoRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPhotoService, PhotoService>();
+        services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<LogUserActivity>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
         services.AddSignalR();
         services.AddSingleton<PresenceTracker>();
+        services.AddOptions();
+        services.AddHttpClient<ResendClient>();
+        services.Configure<ResendClientOptions>( o =>
+        {
+            o.ApiToken = Environment.GetEnvironmentVariable( "ResendAPIKey" )!;
+        } );
+        services.AddTransient<IResendClient, ResendClient>();
+        
         return services;
     }
 }
