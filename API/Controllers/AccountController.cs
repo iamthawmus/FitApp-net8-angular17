@@ -43,18 +43,22 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
         if(!results.Succeeded) 
             return BadRequest(results.Errors);
 
-        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-        var param = new Dictionary<string, string?>
-        {
-            {"token", token },
-            {"userId", user.Id.ToString() }
-        };  
-        var callbackUrl = QueryHelpers.AddQueryString(registerDto.ClientURI, param);
+        var emailVerification = config["EmailVerification"];
+        if(!String.IsNullOrEmpty(emailVerification) && emailVerification == "Enabled")
+            {
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var param = new Dictionary<string, string?>
+            {
+                {"token", token },
+                {"userId", user.Id.ToString() }
+            };  
+            var callbackUrl = QueryHelpers.AddQueryString(registerDto.ClientURI, param);
 
-        await emailService.SendEmailAsync(user.Email, 
-            "Confirm your account " + user.UserName, 
-            "Please confirm your account by clicking this link: <a href=\"" 
-                                            + callbackUrl + "\">link</a>");
+            var response = await emailService.SendEmailAsync(user.Email, 
+                "Confirm your account " + user.UserName, 
+                "Please confirm your account by clicking this link: <a href=\"" 
+                                                + callbackUrl + "\">link</a>");
+        }
 
         return new UserDto
         {
