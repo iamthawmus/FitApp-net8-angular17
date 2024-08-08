@@ -5,7 +5,7 @@ import { NgIf } from '@angular/common';
 import { TextInputComponent } from "../_forms/text-input/text-input.component";
 import { DatePickerComponent } from "../_forms/date-picker/date-picker.component";
 import { Router } from '@angular/router';
-import { matchValues } from '../_helpers/custom-validators';
+import { isValidURL, matchValues } from '../_helpers/custom-validators';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../environments/environment';
 
@@ -57,11 +57,16 @@ export class RegisterComponent implements OnInit {
 
   register() {
     const dob = this.getDateOnly(this.registerForm.get('dateOfBirth')?.value);
-    const clientUri = environment.confirmEmail;
+    const clientUri = environment.production ? environment.websiteUrl + environment.confirmEmail : environment.confirmEmail;
+    if(environment.production && !isValidURL(clientUri)){
+      this.toastr.error("Invalid ClientURI");
+      return;
+    }
     this.registerForm.patchValue({
       dateOfBirth: dob, 
       clientURI: clientUri
     });
+
     this.accountService.register(this.registerForm.value).subscribe({
       next: _ => {
         this.router.navigateByUrl('/members');
