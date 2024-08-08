@@ -1,13 +1,8 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using API.Interfaces;
-using API.Resend.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -46,18 +41,26 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
         var emailVerification = config["EmailVerification"];
         if(!String.IsNullOrEmpty(emailVerification) && emailVerification == "Enabled")
             {
-            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            var param = new Dictionary<string, string?>
-            {
-                {"token", token },
-                {"userId", user.Id.ToString() }
-            };  
-            var callbackUrl = QueryHelpers.AddQueryString(registerDto.ClientURI, param);
+                 try{
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var param = new Dictionary<string, string?>
+                    {
+                        {"token", token },
+                        {"userId", user.Id.ToString() }
+                    };  
+                    var callbackUrl = QueryHelpers.AddQueryString(registerDto.ClientURI, param);
+              
+                    var response = await emailService.SendEmailAsync(user.Email, 
+                            "Confirm your account " + user.UserName, 
+                            "Please confirm your account by clicking this link: <a href=\"" 
+                                                            + callbackUrl + "\">link</a>");
+                }
+                catch(Exception ex){
+                    System.Diagnostics.Trace.TraceError(ex.ToString());
+                    await userManager.DeleteAsync(user);
+                    return BadRequest("Email Confirmation Service failed!");
+                }
 
-            var response = await emailService.SendEmailAsync(user.Email, 
-                "Confirm your account " + user.UserName, 
-                "Please confirm your account by clicking this link: <a href=\"" 
-                                                + callbackUrl + "\">link</a>");
         }
 
         return new UserDto
