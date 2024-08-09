@@ -36,6 +36,10 @@
                         <p>{{member.created | date: 'longDate'}}</p>
                     </div>
                     <div>
+                        <strong>Email:</strong>
+                        <p>{{user?.email ? user?.email : "None"}}</p>
+                    </div>
+                    <div>
                         <strong>Email Verified:</strong>
                         <p>{{user?.emailConfirmed ? "Yes" : "No"}}</p>
                     </div>
@@ -50,6 +54,16 @@
                             Save changes
                         </button>
                     </div>
+                    @if(!user?.emailConfirmed){
+                        <div class="btn-group d-flex">
+                            <button 
+                                class="btn btn-warning col-12"
+                                (click)="resendEmailVerification()"
+                                >
+                                Resend Email Verification
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -117,6 +131,12 @@
                         [member]="member"
                     >
                     </app-member-edit-password>
+                </tab>
+                <tab heading="Update Email">
+                    <app-member-change-email
+                        [member]="member"
+                    >
+                    </app-member-change-email>
                 </tab>
             </tabset>
         </div>

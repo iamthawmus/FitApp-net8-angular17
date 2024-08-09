@@ -67,6 +67,22 @@ export class AccountService {
     params = params.append('token', token);
     params = params.append('userId', userId);
   
-    return this.http.get(this.baseUrl + 'account/confirmemail', { params: params });
+    return this.http.get(this.baseUrl + 'account/confirm-email', { params: params });
+  }
+
+  resendConfirmation(model: any){
+    return this.http.post(this.baseUrl + 'account/resend-confirmation', model)
+  }
+
+  changeEmail(model: any){
+    return this.http.post(this.baseUrl + 'account/change-email', model)
+  }
+
+  confirmEmailChange(token: string, username: string, newEmail: string) {
+    let params = new HttpParams({ encoder: new CustomEncoder() });
+    params = params.append('token', token);
+    params = params.append('username', username);
+    params = params.append('newEmail', newEmail);
+    return this.http.get(this.baseUrl + 'account/confirm-email-change', { params: params });
   }
 }

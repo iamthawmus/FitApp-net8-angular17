@@ -8,13 +8,16 @@ import { ToastrService } from 'ngx-toastr';
 import { PhotoEditorComponent } from "../photo-editor/photo-editor.component";
 import { TimeagoModule, TimeagoPipe } from 'ngx-timeago';
 import { DatePipe } from '@angular/common';
-import { MemberEditPasswordComponent } from "../../member-edit-password/member-edit-password.component";
+import { MemberEditPasswordComponent } from "../member-edit-password/member-edit-password.component";
 import { User } from '../../_models/user';
+import { MemberChangeEmailComponent } from '../member-change-email/member-change-email.component';
+import { environment } from '../../../environments/environment';
+import { isValidURL } from '../../_helpers/custom-validators';
 
 @Component({
   selector: 'app-member-edit',
   standalone: true,
-  imports: [TabsModule, FormsModule, PhotoEditorComponent, TimeagoModule, DatePipe, MemberEditPasswordComponent],
+  imports: [TabsModule, FormsModule, PhotoEditorComponent, TimeagoModule, DatePipe, MemberEditPasswordComponent, MemberChangeEmailComponent],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.css'
 })
@@ -55,5 +58,21 @@ export class MemberEditComponent implements OnInit {
 
   onMemberChange(event: Member) {
     this.member = event;
+  }
+
+  resendEmailVerification(){
+    const clientUri = environment.production ? environment.websiteUrl + environment.confirmEmail : environment.confirmEmail;
+    if(environment.production && !isValidURL(clientUri)){
+      this.toastr.error("Invalid ClientURI");
+      return;
+    }    const updateModal = {
+      username: this.user?.username,
+      clientURI: clientUri
+    }
+    this.accountService.resendConfirmation(updateModal).subscribe({
+      next: () => {
+        this.toastr.success('Sent verification email to confirm email address');
+      }
+    })
   }
 }

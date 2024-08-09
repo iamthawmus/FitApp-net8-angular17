@@ -1,9 +1,9 @@
 import { Component, inject, input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TextInputComponent } from '../_forms/text-input/text-input.component';
-import { matchValues } from '../_helpers/custom-validators';
-import { AdminService } from '../_services/admin.service';
-import { Member } from '../_models/member';
+import { TextInputComponent } from '../../_forms/text-input/text-input.component';
+import { matchValues } from '../../_helpers/custom-validators';
+import { AdminService } from '../../_services/admin.service';
+import { Member } from '../../_models/member';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
