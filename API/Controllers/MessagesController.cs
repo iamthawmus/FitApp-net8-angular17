@@ -19,12 +19,14 @@ public class MessagesController(IUnitOfWork unitOfWork, IMapper mapper) : BaseAp
         var username = User.GetUsername();
         if(username == createMessageDto.RecipientUsername.ToLower())
             return BadRequest("You cannot message yourself");
-        
+
         var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
 
         if(recipient == null || sender == null || sender.UserName == null || recipient.UserName == null)
             return BadRequest("Cannot send message at this time");
+
+        if(!sender.EmailConfirmed) return BadRequest("User has not confirmed email address");
 
         var message = new Message
         {

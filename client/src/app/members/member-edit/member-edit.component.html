@@ -35,6 +35,10 @@
                         <strong>Member since:</strong>
                         <p>{{member.created | date: 'longDate'}}</p>
                     </div>
+                    <div>
+                        <strong>Email Verified:</strong>
+                        <p>{{user?.emailConfirmed ? "Yes" : "No"}}</p>
+                    </div>
                 </div>
                 <div class="card-footer">
                     <div class="btn-group d-flex">
@@ -101,6 +105,7 @@
                 <tab heading="Edit photos">
                     <app-photo-editor 
                         [member]="member"
+                        [user]="user"
                         (memberChange)="onMemberChange($event)"
                         ></app-photo-editor>
                 </tab>

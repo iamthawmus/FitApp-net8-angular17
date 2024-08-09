@@ -61,6 +61,8 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
 
         if(user == null) return BadRequest("Cannot Update user");
 
+        if(!user.EmailConfirmed) return BadRequest("User has not confirmed email address");
+        
         var result = await photoService.AddPhotoAsync(file);
 
         if(result.Error != null) return BadRequest(result.Error.Message);

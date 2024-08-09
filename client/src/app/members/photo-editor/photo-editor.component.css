@@ -24,3 +24,7 @@
 .img-wrapper {
     position: relative;
 }
+
+.alert {
+    padding-top: 20px;
+}
