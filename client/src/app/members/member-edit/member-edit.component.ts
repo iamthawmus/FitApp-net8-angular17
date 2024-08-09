@@ -9,6 +9,7 @@ import { PhotoEditorComponent } from "../photo-editor/photo-editor.component";
 import { TimeagoModule, TimeagoPipe } from 'ngx-timeago';
 import { DatePipe } from '@angular/common';
 import { MemberEditPasswordComponent } from "../../member-edit-password/member-edit-password.component";
+import { User } from '../../_models/user';
 
 @Component({
   selector: 'app-member-edit',
@@ -25,6 +26,7 @@ export class MemberEditComponent implements OnInit {
     }
   }
   member?: Member;
+  user?: User;
   private accountService = inject(AccountService);
   private memberService = inject(MembersService);
   private toastr = inject(ToastrService);
@@ -34,9 +36,10 @@ export class MemberEditComponent implements OnInit {
   }
 
   loadMember() {
-    const user = this.accountService.currentUser();
-    if(!user) return;
-    this.memberService.getMember(user.username).subscribe({
+    const currUser = this.accountService.currentUser();
+    if(!currUser) return;
+    this.user = currUser;
+    this.memberService.getMember(this.user.username).subscribe({
       next: member => this.member = member
     })
   }

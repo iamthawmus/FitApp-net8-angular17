@@ -68,7 +68,8 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
             Username = user.UserName,
             Token = await tokenService.CreateToken(user),
             KnownAs = user.KnownAs,
-            Gender = user.Gender
+            Gender = user.Gender,
+            EmailConfirmed = user.EmailConfirmed
         };
     }
 
@@ -96,7 +97,8 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
             Token = await tokenService.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs,
-            Gender = user.Gender
+            Gender = user.Gender,
+            EmailConfirmed = user.EmailConfirmed
         };    
     }
     private async Task<bool> UserExists(string username){

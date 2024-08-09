@@ -11,6 +11,7 @@ import { MessageService } from '../../_services/message.service';
 import { PresenceService } from '../../_services/presence.service';
 import { AccountService } from '../../_services/account.service';
 import { HubConnection, HubConnectionState } from '@microsoft/signalr';
+import { User } from '../../_models/user';
 
 @Component({
   selector: 'app-member-detail',
@@ -29,8 +30,11 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   member: Member = {} as Member;
   images: GalleryItem[] = [];
   activeTab?: TabDirective;
+  user?: User | null;
   
   ngOnInit(): void {
+    this.user = this.accountService.currentUser();
+
     this.route.data.subscribe({
       next: data=>{
         this.member = data['member'];
@@ -59,13 +63,12 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   }
 
   onRouterParamsChange() {
-    const user = this.accountService.currentUser();
-    if(!user) return;
+    if(!this.user) return;
     if(this.messageService.hubConnection?.state === HubConnectionState.Connected 
         && this.activeTab?.heading === "Messages")
     {
       this.messageService.hubConnection.stop().then(() => {
-        this.messageService.createHubConnection(user, this.member.username);
+        this.messageService.createHubConnection(this.user!!, this.member.username);
       });
     }
   }

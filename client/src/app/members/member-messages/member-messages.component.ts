@@ -2,11 +2,12 @@ import { AfterViewChecked, Component, inject, input, output, ViewChild, viewChil
 import { MessageService } from '../../_services/message.service';
 import { TimeagoModule } from 'ngx-timeago';
 import { FormsModule, NgForm } from '@angular/forms';
+import { AlertModule } from 'ngx-bootstrap/alert';
 
 @Component({
   selector: 'app-member-messages',
   standalone: true,
-  imports: [TimeagoModule, FormsModule],
+  imports: [TimeagoModule, FormsModule, AlertModule],
   templateUrl: './member-messages.component.html',
   styleUrl: './member-messages.component.css'
 })
@@ -16,6 +17,8 @@ export class MemberMessagesComponent implements AfterViewChecked {
 
   messageService = inject(MessageService);
   username = input.required<string>();
+  userEmailConfirmed = input.required<boolean | undefined>();
+
   messageContent = '';
   loading = false;
 
