@@ -14,10 +14,12 @@ import { memberDetailedResolver } from './_resolvers/member-detailed.resolver';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { adminGuard } from './_guards/admin.guard';
 import { ConfirmEmailComponent } from './authentication/confirm-email/confirm-email.component';
+import { ConfirmEmailChangeComponent } from './authentication/confirm-email-change/confirm-email-change.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
-    { path: 'confirmemail', component: ConfirmEmailComponent },
+    { path: 'confirm-email', component: ConfirmEmailComponent },
+    { path: 'confirm-email-change', component: ConfirmEmailChangeComponent},
     {
         path: '',
         runGuardsAndResolvers:'always',

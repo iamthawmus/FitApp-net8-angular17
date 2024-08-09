@@ -6,4 +6,5 @@ export interface User{
     photoUrl?: string;
     roles: string[];
     emailConfirmed: boolean;
+    email: string;
 }

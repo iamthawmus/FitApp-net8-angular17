@@ -70,6 +70,7 @@ export class RegisterComponent implements OnInit {
     this.accountService.register(this.registerForm.value).subscribe({
       next: _ => {
         this.router.navigateByUrl('/members');
+        this.toastr.success("Email verification link sent to your email!");
       },
       error: error => {
         if(error && error.error){

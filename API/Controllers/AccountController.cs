@@ -98,14 +98,15 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
             KnownAs = user.KnownAs,
             Gender = user.Gender,
-            EmailConfirmed = user.EmailConfirmed
+            EmailConfirmed = user.EmailConfirmed,
+            Email = String.IsNullOrEmpty(user.Email) ? "" : user.Email,
         };    
     }
     private async Task<bool> UserExists(string username){
         return await userManager.Users.AnyAsync(x => x.NormalizedUserName == username.ToUpper());
     }
 
-    [HttpGet("ConfirmEmail")]
+    [HttpGet("confirm-email")]
     [AllowAnonymous]
     public async Task<ActionResult> ConfirmEmail(int userId, string token)
     {
@@ -125,5 +126,101 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
         }
         
         return BadRequest("Could not confirm email address");
+    }
+
+    [HttpPost("resend-confirmation")]
+    public async Task<ActionResult> ResendConfirmation(ResendConfirmationDto resendConfirmationDto)
+    {
+        if(String.IsNullOrEmpty(resendConfirmationDto.Username))
+            return BadRequest("Username is missing");
+
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(resendConfirmationDto.Username);
+
+        if(user == null || user.Email == null || user.UserName == null)
+            return BadRequest("User not found.");
+        if(resendConfirmationDto.ClientURI == null)
+            return BadRequest("Missing Client Uri");
+        if(user.EmailConfirmed)
+            return BadRequest("User's email address is already confirmed.");
+        try
+        {
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var param = new Dictionary<string, string?>
+            {
+                {"token", token },
+                {"userId", user.Id.ToString() }
+            };  
+            var callbackUrl = QueryHelpers.AddQueryString(resendConfirmationDto.ClientURI, param);
+            var subject = "Confirm your account " + user.UserName;
+            var htmlMessage = "Please confirm your account by clicking this link: <a href=\"" 
+                                                    + callbackUrl + "\">link</a>";
+
+            var response = await emailService.SendEmailAsync(user.Email, 
+                    subject, 
+                    htmlMessage);
+
+            return Ok(response);
+        }
+        catch(Exception ex){
+            System.Diagnostics.Trace.TraceError(ex.ToString());
+            return BadRequest("Email Confirmation Service failed!");
+        }
+    }
+
+    [HttpPost("change-email")]
+    public async Task<ActionResult> ChangeEmail(ChangeEmailDto changeEmailDto)
+    {
+        if(String.IsNullOrEmpty(changeEmailDto.Username) || String.IsNullOrEmpty(changeEmailDto.NewEmail) 
+            || String.IsNullOrEmpty(changeEmailDto.ClientURI))
+            return BadRequest("Change email params missing");
+
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(changeEmailDto.Username);
+
+        if(user == null)
+            return BadRequest("User not found");
+
+        try{
+            var token = await userManager.GenerateChangeEmailTokenAsync(user, changeEmailDto.NewEmail);
+            var param = new Dictionary<string, string?>
+            {
+                {"token", token },
+                {"username", changeEmailDto.Username },
+                {"newEmail", changeEmailDto.NewEmail}
+            };  
+            var callbackUrl = QueryHelpers.AddQueryString(changeEmailDto.ClientURI, param);
+            var subject = "Confirm your new email address, " + user.UserName;
+            var htmlMessage = "Please confirm your new email by clicking this link: <a href=\"" 
+                                                    + callbackUrl + "\">link</a>";
+
+            var response = await emailService.SendEmailAsync(changeEmailDto.NewEmail, 
+                    subject, 
+                    htmlMessage);
+            
+            return Ok(response);
+        }
+        catch(Exception ex){
+            System.Diagnostics.Trace.TraceError(ex.ToString());
+            return BadRequest("Change Email Service failed!");
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpGet("confirm-email-change")]
+    public async Task<ActionResult> ConfirmEmailChange(string token, string username, string newEmail)
+    {
+        try
+        {
+            var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
+            if(user == null)
+                return BadRequest("User not found");
+
+            var response = await userManager.ChangeEmailAsync(user, newEmail, token);
+
+            return Ok(response);
+        }
+        catch(Exception ex){
+            System.Diagnostics.Trace.TraceError(ex.ToString());
+            return BadRequest("Confirm Email Change Service failed!");
+        }
     }
 }
