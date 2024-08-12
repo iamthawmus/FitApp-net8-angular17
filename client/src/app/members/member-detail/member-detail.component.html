@@ -8,6 +8,11 @@
                     <div class="mb-2">
                         <i class="fa fa-user-circle text-success"></i> Online now
                     </div>
+                }
+                @if(hasLiked()){
+                    <div class="mb-2">
+                        <i class="fa fa-heart ms-2" style="color: red"></i>
+                    </div>
                 }            
                 <div>
                     <strong>Location:</strong>
@@ -28,7 +33,7 @@
             </div>
             <div class="card-footer">
                 <div class="btn-group d-flex">
-                    <button class="btn btn-primary">Like</button>
+                    <button class="btn btn-primary" (click)="toggleLike()">{{hasLiked() ? 'Unlike' : 'Like'}}</button>
                     <button class="btn btn-success" (click)="selectTab('Messages')">Message</button>
                 </div>
             </div>

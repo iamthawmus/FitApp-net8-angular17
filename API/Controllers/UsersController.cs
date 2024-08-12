@@ -63,6 +63,8 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoServi
 
         if(!user.EmailConfirmed) return BadRequest("User has not confirmed email address");
         
+        if(user.Photos.Count >= 9) return BadRequest("User cannot upload more than 9 photos");
+
         var result = await photoService.AddPhotoAsync(file);
 
         if(result.Error != null) return BadRequest(result.Error.Message);

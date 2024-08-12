@@ -75,7 +75,7 @@
             </div>
             <button type="button" class="btn btn-success btn-s"
                     (click)="uploader?.uploadAll()"
-                    [disabled]="!uploader?.getNotUploadedItems()?.length || !user()?.emailConfirmed">
+                    [disabled]="!uploader?.getNotUploadedItems()?.length || !user()?.emailConfirmed || member().photos.length >= 9">
                 <span class="fa fa-upload"
                 ></span> Upload all
             </button>
@@ -95,6 +95,13 @@
         <div>
             <alert type="warning" class="alert">
                 <strong>Warning!</strong> Email verification required in order to upload photos.
+            </alert>
+        </div>
+    }
+    @if(member().photos.length >= 9){
+        <div>
+            <alert type="warning" class="alert">
+                <strong>Warning!</strong> You may only have at MAX 9 photos uploaded. Please delete some before uploading more.
             </alert>
         </div>
     }

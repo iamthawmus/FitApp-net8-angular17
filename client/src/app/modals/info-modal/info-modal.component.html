@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+</div>
+<div class="modal-body">
+    <ul>
+    @for (message of messages; track $index) {
+        <li>{{message}}</li>
+    }
+    </ul>
+ </div>
+<div class="modal-footer">
+    <button class="btn btn-success" (click)="close()">
+        {{btnCloseText}}
+    </button>
+</div>

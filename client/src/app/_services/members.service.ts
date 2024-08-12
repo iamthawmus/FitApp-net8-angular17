@@ -33,7 +33,9 @@ export class MembersService {
     let params = setPaginationHeaders(this.userParams().pageNumber, this.userParams().pageSize);
     params = params.append('minAge', this.userParams().minAge);
     params = params.append('maxAge', this.userParams().maxAge);
-    params = params.append('gender', this.userParams().gender);
+    if(this.userParams().gender === 'male' || this.userParams().gender === 'female'){
+      params = params.append('gender', this.userParams().gender);
+    }
     params = params.append('orderBy', this.userParams().orderBy);
     
     return this.http.get<Member[]>(this.baseUrl + 'users', {observe: 'response', params}).subscribe({
