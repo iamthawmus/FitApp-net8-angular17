@@ -1,11 +1,12 @@
 <div class="container mt-5">
     <div style="text-align: center;">
         @if(!registerMode){
-        <h1>Find your match</h1>
-        <p class="lead">Come on in to view your matches... all you need to do is sign up!</p>
+        <h1>Welcome to the Fit App</h1>
+        <p class="lead">Ready to elevate your fitness game? Log your progress, share your journey,
+             and connect with a community that’s here to support you every step of the way. Let’s the Gainz begin!</p>
         <div class="text-center">
             <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Register</button>
-            <button class="btn btn-primary btn-lg me-2">Learn more</button>
+            <button (click)="openLearnMoreModal()" class="btn btn-primary btn-lg me-2">Learn more</button>
         </div>
         } @else {
         <div class="container">

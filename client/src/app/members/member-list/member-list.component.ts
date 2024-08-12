@@ -17,7 +17,7 @@ imports: [MemberCardComponent, PaginationModule, FormsModule, ButtonsModule],
 })
 export class MemberListComponent implements OnInit {
    memberService = inject(MembersService);
-  genderList = [{value: 'male', display: 'Males'}, {value:'female', display:'Females'}];
+  genderList = [{value: 'male', display: 'Males'}, {value:'female', display:'Females'}, {value: 'any', display: 'Any'}];
 
   ngOnInit(): void {
     if(!this.memberService.paginatedResult()){
