@@ -1,0 +1,118 @@
+<div>
+    <h4> Workout Log</h4>
+</div>
+@if(memberService.user?.emailConfirmed)
+{
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary">
+            View Calendar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="createWorkout()" [disabled]="(appUserWorkout != undefined)">
+            Create Workout
+        </button>
+    </div>
+    @if(appUserWorkout)
+    {
+        <div>
+            <h3>{{formattedWorkoutDateStr}}</h3>
+            <h3>{{appUserWorkout.workoutName}}</h3>
+            <h3>{{appUserWorkout.description}}</h3>
+            <h3>{{appUserWorkout.notes}}</h3>
+        </div>
+        <div class="container">
+            <div class="row">Start typing in an exercise:</div>
+            <div class="row">
+                <div class="col-sm">
+                    <input [(ngModel)]="selectedExercise"
+                        [typeahead]="availableExercises"
+                        class="form-control"
+                    >
+                </div>
+                <div class="col-sm">
+                    <button type="button" class="btn btn-primary" (click)="addExerciseToUI()">
+                        Add Exercise
+                    </button>
+                </div>
+            </div>
+        </div>
+        @if(currentExercises.size > 0)
+        {
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" [(ngModel)]="oneAtATime">
+                    Open only one at a time
+                </label>
+            </div>
+            <accordion [closeOthers]="oneAtATime">
+                @for(exercise of currentExercises; track $index)
+                {
+                    <accordion-group heading={{exercise.exerciseName}}>
+                        <button type="button" class="btn btn-primary" (click)="toggleAddSetMode()">
+                            Add Set
+                        </button>
+                        @if(addSetMode){
+                            <app-workout-log-set-form
+                                [exercise]="exercise"
+                                [appUserWorkout]="appUserWorkout"
+                                (workoutSet)="addNewSet($event)"
+                                (cancelSet)="cancelAddSetMode($event)"
+                            >
+                            </app-workout-log-set-form>
+                        }
+                        @for(set of getWorkoutSetFromExerciseId(exercise.exerciseID); track $index)
+                        {
+                            <div class="row">
+                                <div class="col-sm">
+                                    Set #{{$index + 1}}
+                                </div>
+                                @if(exercise.workoutType == "Cardio")
+                                {
+                                    <div class="col-sm">Distance: {{set.distance}}</div>
+                                    <div class="col-sm">Duration in Minutes: {{set.durationInMinutes}}</div>
+                                }
+                                @else {
+                                    <div class="col-sm">Repetitions: {{set.repetitionsPerSet}}</div>
+                                    <div class="col-sm">Weight: {{set.weightPerRepetition}}</div>
+                                }
+                                <div class="col-sm">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-primary" (click)="toggleEditSetMode(set.workoutSetID)">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" (click)="deleteSet(set)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            @if(editSetMode && set.workoutSetID === editModeTargetId)
+                            {
+                                <div class="row">
+                                    <app-workout-log-set-edit-form
+                                        [workoutSet]="set"
+                                        [exercise]="exercise"
+                                        (updatedWorkoutSet)="editSet($event)"
+                                        (cancelEdit)="cancelEditSetMode($event)"
+                                    >
+                                    </app-workout-log-set-edit-form>
+                                </div>
+                            }
+                        }
+                    </accordion-group>
+                }
+            </accordion>
+        }
+    }
+    @else {
+        <div>
+            <h3>There is no current workout</h3>
+        </div>
+    }    
+}
+@else {
+    <div>
+        <alert type="warning" class="alert">
+            <strong>Warning!</strong> Email verification required in order to use workout log.
+        </alert>
+    </div>
+}
