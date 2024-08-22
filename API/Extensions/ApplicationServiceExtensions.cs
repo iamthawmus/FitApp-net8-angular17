@@ -18,7 +18,9 @@ public static class ApplicationServiceExtensions
         services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);;
         services.AddDbContext<DataContext>(opt =>
         {
-            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), builder => {
+                builder.EnableRetryOnFailure();
+            });
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
