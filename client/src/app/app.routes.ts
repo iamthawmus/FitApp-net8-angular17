@@ -15,6 +15,8 @@ import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { adminGuard } from './_guards/admin.guard';
 import { ConfirmEmailComponent } from './authentication/confirm-email/confirm-email.component';
 import { ConfirmEmailChangeComponent } from './authentication/confirm-email-change/confirm-email-change.component';
+import { WorkoutlogService } from './_services/workoutlog.service';
+import { WorkoutLogComponent } from './workout-log/workout-log/workout-log.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -25,6 +27,7 @@ export const routes: Routes = [
         runGuardsAndResolvers:'always',
         canActivate:[authGuard],
         children: [
+            {path: 'workout-log', component: WorkoutLogComponent},
             {path: 'members', component: MemberListComponent},
             {path: 'members/:username', component: MemberDetailComponent, resolve: {member: memberDetailedResolver}},
             {path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedChangesGuard]},

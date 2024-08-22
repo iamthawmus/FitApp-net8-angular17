@@ -23,4 +23,5 @@ public class AppUser : IdentityUser<int>
     public List<Message> MessagesSent { get; set; } = [];
     public List<Message> MessagesReceived { get; set; } = [];
     public ICollection<AppUserRole> UserRoles { get; set; } = [];
+    public ICollection<AppUserWorkout> AppUserWorkouts { get; set; } = [];
 }

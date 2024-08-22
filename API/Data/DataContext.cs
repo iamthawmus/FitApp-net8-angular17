@@ -15,6 +15,9 @@ IdentityUserToken<int>>(options)
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }
     public DbSet<Photo> Photos { get; set; }
+    public DbSet<Exercise> Exercises { get; set; }
+    public DbSet<AppUserWorkout> AppUserWorkouts { get; set; }
+    public DbSet<WorkoutSet> WorkoutSets { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -58,5 +61,38 @@ IdentityUserToken<int>>(options)
         
         builder.Entity<Photo>()
             .HasQueryFilter(x => x.IsApproved);
+
+
+        // Workout Log entities
+
+        builder.Entity<Exercise>()
+            .HasKey(e => e.ExerciseID);
+
+        builder.Entity<AppUserWorkout>()
+            .HasKey(uw => uw.AppUserWorkoutID);
+
+        builder.Entity<WorkoutSet>()
+            .HasKey(we => we.WorkoutSetID);
+
+        // Configuring relationships
+        builder.Entity<AppUserWorkout>()
+            .HasOne(uw => uw.AppUser)
+            .WithMany(u => u.AppUserWorkouts)
+            .HasForeignKey(uw => uw.UserID);
+
+        builder.Entity<WorkoutSet>()
+            .HasOne(we => we.AppUserWorkout)
+            .WithMany(uw => uw.WorkoutSet)
+            .HasForeignKey(we => we.AppUserWorkoutID);
+
+        builder.Entity<WorkoutSet>()
+            .HasOne(we => we.Exercise)
+            .WithMany(e => e.WorkoutSet)
+            .HasForeignKey(we => we.ExerciseID);
+
+        // Other configurations
+        builder.Entity<WorkoutSet>()
+            .Property(we => we.WeightPerRepetition)
+            .HasColumnType("decimal(5,2)");
     }
 }

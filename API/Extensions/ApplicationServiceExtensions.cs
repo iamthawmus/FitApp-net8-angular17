@@ -1,4 +1,6 @@
-﻿using API.Data;
+﻿using System.Text.Json.Serialization;
+using API.Data;
+using API.Data.Migrations;
 using API.Helpers;
 using API.Interfaces;
 using API.Resend;
@@ -13,7 +15,7 @@ public static class ApplicationServiceExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);;
         services.AddDbContext<DataContext>(opt =>
         {
             opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
@@ -24,6 +26,9 @@ public static class ApplicationServiceExtensions
         services.AddScoped<ILikesRepository, LikesRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IPhotoRepository, PhotoRepository>();
+        services.AddScoped<IExerciseRepository, ExerciseRepository>();
+        services.AddScoped<IWorkoutSetRepository, WorkoutSetRepository>();
+        services.AddScoped<IAppUserWorkoutRepository, AppUserWorkoutRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<IEmailService, EmailService>();
