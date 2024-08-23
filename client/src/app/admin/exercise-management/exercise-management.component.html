@@ -1,0 +1,51 @@
+<div class="btn-group">
+    <button class="btn btn-primary" (click)="updateMode('Add')">
+        Add Exercise
+    </button>
+    <button class="btn btn-warning">
+        Edit Exercise
+    </button>
+    <button class="btn btn-danger">
+        Delete Exercise
+    </button>
+    <button class="btn btn-info" (click)="updateMode('View')">
+        View Exercises
+    </button>
+</div>
+@if(editMode === "Add")
+{
+    <div>
+        <h3> Add a new Exercise</h3>
+        <app-exercise-management-add-form>
+
+        </app-exercise-management-add-form>
+    </div>
+}
+@if(editMode === "View")
+{
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">Exercise Name</th>
+                    <th style="width: 25%;">Workout Type</th>
+                    <th style="width: 15%;">Muscle Group </th>
+                    <th style="width: 15%;">Equipment Required </th>
+                    <th style="width: 20%;">Description </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for (exercise of exercises; track $index){
+                    <tr>
+                        <td>{{exercise.exerciseName}}</td>
+                        <td>{{exercise.workoutType}}</td>
+                        <td>{{exercise.muscleGroup}}</td>
+                        <td>{{exercise.equipmentRequired}}</td>
+                        <td>{{exercise.description}}</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,9 @@
+<div class="mb-3 form-floating">
+    <select class="form-select" [formControl]="control">
+        <option selected [ngValue]=""></option>
+        @for (option of options(); track $index){
+            <option> {{option}} </option>
+        }
+    </select>
+    <label>{{label()}}</label>
+</div>

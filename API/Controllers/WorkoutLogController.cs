@@ -106,6 +106,12 @@ public class WorkoutLogController(IUnitOfWork unitOfWork, IMapper mapper) : Base
         return Ok(await unitOfWork.ExerciseRepository.GetExercises());
     }
 
+    [HttpGet("get-exercise-count")]
+    public ActionResult GetExerciseCount()
+    {
+        return Ok(unitOfWork.ExerciseRepository.GetExerciseCount());
+    }
+
     [HttpPost("create-workout-set")]
     public async Task<ActionResult<WorkoutSet>> CreateWorkoutSet(WorkoutSetDto workoutSetDto)
     {
