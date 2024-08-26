@@ -39,4 +39,11 @@ public class ExerciseRepository(DataContext dataContext, IMapper mapper) : IExer
 
         return await query.ToListAsync();
     }
+
+    public int GetExerciseCount()
+    {
+        var query = dataContext.Exercises.AsQueryable().Count();
+        return query;
+    }
+
 }

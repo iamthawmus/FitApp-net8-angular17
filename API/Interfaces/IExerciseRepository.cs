@@ -14,4 +14,6 @@ public interface IExerciseRepository
     public Task<Exercise?> GetExerciseByName(string name);
 
     public Task<IEnumerable<ExerciseDto>> GetExercises();
+
+    public int GetExerciseCount();
 }

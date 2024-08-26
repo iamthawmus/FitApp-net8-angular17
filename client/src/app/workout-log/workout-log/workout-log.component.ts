@@ -71,6 +71,7 @@ export class WorkoutLogComponent implements OnInit {
       });
     }
     else if(!this.appUserWorkout){
+      this.availableExercises = [...this.workoutLogService.exerciseMap.keys()];
       this.getWorkout(undefined);
     }
   }

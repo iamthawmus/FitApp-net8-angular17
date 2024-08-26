@@ -35,6 +35,10 @@ export class WorkoutlogService {
     return this.http.delete(this.baseUrl + 'workoutlog/delete-exercise/' + id);
   }
 
+  getExerciseCount(){
+    return this.http.get<number>(this.baseUrl + 'workoutlog/get-exercise-count');
+  }
+
   createWorkoutSet(model: any){
     return this.http.post(this.baseUrl + 'workoutlog/create-workout-set', model);
   }
