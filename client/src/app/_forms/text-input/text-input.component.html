@@ -16,4 +16,6 @@
         {{label()}} needs to be at most {{control.errors?.['maxlength'].requiredLength}} characters</div>
     <div *ngIf="control.hasError('isMatching')" class="invalid-feedback text-start">
         Passwords do not match</div>
+    <div *ngIf="control.hasError('pattern')" class="invalid-feedback text-start">
+        Passwords require at least one Uppercase and one Digit</div>
 </div>

@@ -42,8 +42,8 @@ export class MemberEditPasswordComponent implements OnInit {
 
     intializeForm(){
       this.updatePasswordForm  = this.fb.group({
-        oldPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-        newPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+        oldPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50), Validators.pattern(/(?=.*\d)(?=.*[A-Z])/)]],
+        newPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50), Validators.pattern(/(?=.*\d)(?=.*[A-Z])/)]],
         confirmNewPassword: ['', [Validators.required, matchValues('newPassword')]],
       });
       this.updatePasswordForm.controls['newPassword'].valueChanges.subscribe({

@@ -35,8 +35,22 @@ public class AccountController(UserManager<AppUser> userManager, ITokenService t
 
         var results = await userManager.CreateAsync(user, registerDto.Password);
 
-        if(!results.Succeeded) 
-            return BadRequest(results.Errors);
+        if(!results.Succeeded)
+        {
+            string errorString = "An error has occurred: ";
+            if(results.Errors.Count() > 0)
+            {
+                var errorArry = results.Errors.ToArray();
+                for(int i = 0; i < errorArry.Length; i++)
+                {
+                    var identityError = errorArry[i];
+                    if(identityError != null){
+                        errorString += identityError.Description + System.Environment.NewLine;
+                    }
+                }
+            }
+            return BadRequest(errorString);
+        } 
 
         var emailVerification = config["EmailVerification"];
         if(!String.IsNullOrEmpty(emailVerification) && emailVerification == "Enabled")
