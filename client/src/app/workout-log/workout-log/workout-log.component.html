@@ -13,16 +13,16 @@
     </div>
     @if(appUserWorkout)
     {
-        <div>
-            <h3>{{formattedWorkoutDateStr}}</h3>
-            <h3>{{appUserWorkout.workoutName}}</h3>
-            <h3>{{appUserWorkout.description}}</h3>
-            <h3>{{appUserWorkout.notes}}</h3>
-        </div>
-        <div class="container">
+        <div class="container m-1">
+            <div class="mb-1">
+                <h3>{{formattedWorkoutDateStr}}</h3>
+                <h3>{{appUserWorkout.workoutName}}</h3>
+                <h3>{{appUserWorkout.description}}</h3>
+                <h3>{{appUserWorkout.notes}}</h3>
+            </div>
             <div class="row">Start typing in an exercise:</div>
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm mb-1">
                     <input [(ngModel)]="selectedExercise"
                         [typeahead]="availableExercises"
                         class="form-control"

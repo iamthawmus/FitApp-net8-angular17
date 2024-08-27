@@ -1,8 +1,13 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
   <div class="container">
-    <a class="navbar-brand" routerLink="/"  routerLinkActive="active" href="#">The Fit App</a>
-    <ul class="navbar-nav me-auto mb-2 mb-md-0">
-      @if(accountService.currentUser()){
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
+      aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggler">
+      <a class="navbar-brand" routerLink="/" routerLinkActive="active" href="#">The Fit App</a>
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        @if(accountService.currentUser()){
         <li class="nav-item">
           <a routerLink="/members" routerLinkActive="active" class="nav-link">Members</a>
         </li>
@@ -21,34 +26,31 @@
         <li class="nav-item" *appHasRole="['Admin']">
           <a routerLink="/errors" routerLinkActive="active" class="nav-link">Errors</a>
         </li>
-      }
-    </ul>
+        }
+      </ul>
 
 
-    @if(accountService.currentUser()){
+      @if(accountService.currentUser()){
       <div dropdown class="dropdown">
-        <img 
-          class="me-2"
-          src="{{accountService.currentUser()?.photoUrl || './assets/user.png'}}"
-          alt="user"
-        >
+        <img class="me-2" src="{{accountService.currentUser()?.photoUrl || './assets/user.png'}}" alt="user">
         <a dropdownToggle class="dropdown-toggle text-light text-decoration-none">
           Welcome {{accountService.currentUser()?.knownAs}}
         </a>
         <div *dropdownMenu="" class="dropdown-menu">
-            <a routerLink="/member/edit" href="" class="dropdown-item">Edit profile</a>
-            <div class="dropdown-divider"></div>
-            <a href="" class="dropdown-item" (click)="logout()">Logout</a>
+          <a routerLink="/member/edit" href="" class="dropdown-item">Edit profile</a>
+          <div class="dropdown-divider"></div>
+          <a href="" class="dropdown-item" (click)="logout()">Logout</a>
         </div>
       </div>
-    }
-    @if(!accountService.currentUser()){
+      }
+      @if(!accountService.currentUser()){
       <form #loginForm="ngForm" (ngSubmit)="login()" class="d-flex">
         <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Username">
         <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password"
           type="password">
         <button class="btn btn-success" type="submit">Login</button>
       </form>
-    }
+      }
+    </div>
   </div>
 </nav>
