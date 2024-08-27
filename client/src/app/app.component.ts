@@ -16,7 +16,8 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
 })
 export class AppComponent implements OnInit {
   private accountService = inject(AccountService);
-  title = 'DatingApp';
+
+  title = 'FitApp';
 
   ngOnInit(): void {
     this.setCurrentUser();
