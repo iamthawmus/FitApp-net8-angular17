@@ -13,11 +13,12 @@ import { AccountService } from '../../_services/account.service';
 import { HubConnection, HubConnectionState } from '@microsoft/signalr';
 import { User } from '../../_models/user';
 import { LikesService } from '../../_services/likes.service';
+import { MemberWorkoutLogComponent } from "../member-workout-log/member-workout-log.component";
 
 @Component({
   selector: 'app-member-detail',
   standalone: true,
-  imports: [TabsModule, GalleryModule, TimeagoModule, DatePipe, MemberMessagesComponent],
+  imports: [TabsModule, GalleryModule, TimeagoModule, DatePipe, MemberMessagesComponent, MemberWorkoutLogComponent],
   templateUrl: './member-detail.component.html',
   styleUrl: './member-detail.component.css'
 })
@@ -34,6 +35,7 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   activeTab?: TabDirective;
   user?: User | null;
   hasLiked = computed(() => this.likeService.likeIds().includes(this.member.id));
+  renderWorkoutTab = false;
 
   ngOnInit(): void {
     this.user = this.accountService.currentUser();
@@ -90,6 +92,14 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     }
     else{
       this.messageService.stopHubConnection();
+    }
+
+    if(this.activeTab.heading === 'Workouts')
+    {
+      this.renderWorkoutTab = true;
+    }
+    else{
+      this.renderWorkoutTab = false;
     }
   }
 

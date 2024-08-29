@@ -5,6 +5,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { HasRoleDirective } from '../_directives/has-role.directive';
+import { WorkoutlogService } from '../_services/workoutlog.service';
+import { Exercise } from '../_models/exercise';
 
 @Component({
   selector: 'app-nav',
@@ -17,6 +19,8 @@ export class NavComponent {
   accountService = inject(AccountService);
   private router = inject(Router);
   private toastr = inject(ToastrService)
+  private workoutLogService = inject(WorkoutlogService);
+
   model: any = {};
 
   login() {
@@ -24,6 +28,7 @@ export class NavComponent {
       next: response => {
         console.log(response);
         this.router.navigateByUrl('/members');
+        this.workoutLogService.checkCacheForExerciseList(() => {});
       },
       error: error => this.toastr.error(error.error)
     });

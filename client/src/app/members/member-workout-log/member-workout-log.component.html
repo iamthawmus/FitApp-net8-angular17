@@ -1,0 +1,77 @@
+<div>
+    <h4> Workout Log</h4>
+</div>
+@if(renderForm())
+{
+    <form [formGroup]="workoutDateForm" (ngSubmit)="findWorkout()" autocomplete="off">
+        <hr>
+        <app-date-picker
+            [formControl]="$any(workoutDateForm.controls['workoutDate'])"
+            [label]="'Select Workout Date'"
+            [maxDate]="maxDate"
+        >
+        </app-date-picker>
+        @if(validationErrors)
+        {
+            <div class="alert alert-danger text-start">
+                <ul>
+                    @for (error of validationErrors; track $index){
+                        <li>{{error}}</li>
+                    }
+                </ul>
+            </div>
+        }
+        <div class="form-group text-center button-footer">
+            <button [disabled]="!workoutDateForm.valid" class="btn btn-success me-2" type="submit">Find Workout</button>
+        </div>
+    </form>
+    @if(appUserWorkout)
+    {
+    <div class="container m-1">
+        <div class="mb-1">
+            <h3>{{formattedWorkoutDateStr}}</h3>
+            <h3>{{appUserWorkout.workoutName}}</h3>
+            <h3>{{appUserWorkout.description}}</h3>
+            <h3>{{appUserWorkout.notes}}</h3>
+        </div>
+    </div>
+    @if(currentExercises.size > 0)
+    {
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" [(ngModel)]="oneAtATime">
+            Open only one at a time
+        </label>
+    </div>
+    <accordion [closeOthers]="oneAtATime">
+        @for(exercise of currentExercises; track $index)
+        {
+        <accordion-group heading={{exercise.exerciseName}}>
+            @for(set of getWorkoutSetFromExerciseId(exercise.exerciseID); track $index)
+            {
+            <div class="row">
+                <div class="col-sm">
+                    Set #{{$index + 1}}
+                </div>
+                @if(exercise.workoutType == "Cardio")
+                {
+                <div class="col-sm">Distance: {{set.distance}}</div>
+                <div class="col-sm">Duration in Minutes: {{set.durationInMinutes}}</div>
+                }
+                @else {
+                <div class="col-sm">Repetitions: {{set.repetitionsPerSet}}</div>
+                <div class="col-sm">Weight: {{set.weightPerRepetition}}</div>
+                }
+            </div>
+            }
+        </accordion-group>
+        }
+    </accordion>
+    }
+    }
+    @else {
+    <div>
+        <h3>There is no workout for this date</h3>
+    </div>
+    }
+}

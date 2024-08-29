@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { WorkoutlogService } from '../../_services/workoutlog.service';
 import { Exercise } from '../../_models/exercise';
@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { WorkoutSet } from '../../_models/workoutSet';
 import { AccountService } from '../../_services/account.service';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { getFormattedDate } from '../../_helpers/date-format';
+import { getDateOnly, getFormattedDate } from '../../_helpers/date-format';
 import { CommonModule } from '@angular/common';
 import { WorkoutLogSetFormComponent } from "../workout-log-set-form/workout-log-set-form.component";
 import { WorkoutLogSetEditFormComponent } from "../workout-log-set-edit-form/workout-log-set-edit-form.component";
@@ -16,12 +16,13 @@ import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { ConfirmDialogComponent } from '../../modals/confirm-dialog/confirm-dialog.component';
 import { MembersService } from '../../_services/members.service';
 import { AlertModule } from 'ngx-bootstrap/alert';
+import { DatePickerComponent } from '../../_forms/date-picker/date-picker.component';
 
 
 @Component({
   selector: 'app-workout-log',
   standalone: true,
-  imports: [AccordionModule, FormsModule, TypeaheadModule, CommonModule, WorkoutLogSetFormComponent, WorkoutLogSetEditFormComponent, AlertModule],
+  imports: [AccordionModule, FormsModule, TypeaheadModule, CommonModule, WorkoutLogSetFormComponent, WorkoutLogSetEditFormComponent, AlertModule, ReactiveFormsModule, DatePickerComponent],
   templateUrl: './workout-log.component.html',
   styleUrl: './workout-log.component.css'
 })
@@ -30,6 +31,7 @@ export class WorkoutLogComponent implements OnInit {
   private workoutLogService = inject(WorkoutlogService);
   private toastr = inject(ToastrService);
   private accountService = inject(AccountService);
+  private fb = inject(FormBuilder)
   oneAtATime = true;
   currentExercises: Set<Exercise> = new Set();
   appUserWorkout: AppUserWorkout | undefined = undefined;
@@ -44,40 +46,32 @@ export class WorkoutLogComponent implements OnInit {
   private modalService = inject(BsModalService);
   formattedWorkoutDateStr : string = "";
 
+  workoutDateForm: FormGroup = new FormGroup({});
+  maxDate = new Date();
+  toggleCalenderForm = false;
+
   ngOnInit(): void {
-    if(this.workoutLogService.exercises.length == 0)
-    {
-      this.workoutLogService.getExercises().subscribe({
-        next: (response : Exercise[]) => {
-          if(response)
-          {
-            this.workoutLogService.exercises = response;
-            if(this.workoutLogService.exercises.length > 0)
-            {
-              this.workoutLogService.exercises.forEach((exercise, index) => {
-                this.workoutLogService.exerciseMap.set(exercise.exerciseName, index);
-                this.workoutLogService.exerciseMapById.set(exercise.exerciseID.toString(), index);
-              });
+    this.intializeForm();
 
-              this.availableExercises = [...this.workoutLogService.exerciseMap.keys()];
-
-              if(!this.appUserWorkout){
-                this.getWorkout(undefined);
-              }
-
-            }
-          }
-        }
-      });
-    }
-    else if(!this.appUserWorkout){
+    this.workoutLogService.checkCacheForExerciseList(() => {
       this.availableExercises = [...this.workoutLogService.exerciseMap.keys()];
-      this.getWorkout(undefined);
-    }
+      if(!this.appUserWorkout){
+        this.getWorkout(undefined);
+      }
+    });
+  }
+
+  intializeForm(){
+    this.workoutDateForm  = this.fb.group({
+      workoutDate: ['', [Validators.required]],
+    });
   }
 
   createWorkout(): void {
     let workoutDate = getFormattedDate(undefined);
+    if(this.toggleCalenderForm){
+      workoutDate = getDateOnly(this.workoutDateForm.get('workoutDate')?.value)!;
+    }
     let params = {
       WorkoutDate: workoutDate
     };
@@ -87,11 +81,12 @@ export class WorkoutLogComponent implements OnInit {
           this.appUserWorkout = {
             appUserWorkoutID : response.appUserWorkoutID,
             workoutDate: new Date(workoutDate),
-            workoutName: "Workout for " + workoutDate,
+            workoutName: "",
             description: "",
             notes: "",
             workoutSets: []
           };
+          this.formattedWorkoutDateStr = new Date(this.appUserWorkout?.workoutDate).toDateString();
         }
         else{
           this.toastr.error("Could not create workout.");
@@ -100,7 +95,7 @@ export class WorkoutLogComponent implements OnInit {
     });
   }
 
-  getWorkout(date : Date | undefined){
+  getWorkout(date : string | undefined){
 
     let username : string = "";
     if(!this.accountService.currentUser() || !this.accountService.currentUser()?.username)
@@ -125,10 +120,16 @@ export class WorkoutLogComponent implements OnInit {
         }
         else{
           this.toastr.warning("Could not find workout");
+          this.appUserWorkout = undefined;
+          this.workoutSetMap = new Map();
+          this.currentExercises = new Set();
         }
       },
       error: (err: any) => {
         console.log(err);
+        this.appUserWorkout = undefined;
+        this.workoutSetMap = new Map();
+        this.currentExercises = new Set();
       }
     });
   }
@@ -252,5 +253,18 @@ export class WorkoutLogComponent implements OnInit {
     }
     
     return [];
+  }
+
+  findWorkout(){
+    const workoutDate = getDateOnly(this.workoutDateForm.get('workoutDate')?.value);
+    if(!workoutDate){
+      this.toastr.error("No workout date selected");
+      return;
+    }
+    this.getWorkout(workoutDate);
+  }
+
+  toggleCalenderButton(){
+    this.toggleCalenderForm = !this.toggleCalenderForm;
   }
 }
