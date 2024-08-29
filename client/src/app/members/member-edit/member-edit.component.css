@@ -13,3 +13,23 @@
     background-color: #fff;
     border-top: none;
 }
+
+@media (min-width: 576px) {
+    .col-profile {
+        width: 100%;
+    }
+
+    .col-tabs {
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .col-profile {
+        width: 33%;
+    }
+
+    .col-tabs {
+        width: 67%;
+    }
+}

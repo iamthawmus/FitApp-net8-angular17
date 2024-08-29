@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { isValidURL, matchValues } from '../_helpers/custom-validators';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../environments/environment';
+import { getDateOnly } from '../_helpers/date-format';
 
 @Component({
   selector: 'app-register',
@@ -56,7 +57,7 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    const dob = this.getDateOnly(this.registerForm.get('dateOfBirth')?.value);
+    const dob = getDateOnly(this.registerForm.get('dateOfBirth')?.value);
     const clientUri = environment.production ? environment.websiteUrl + environment.confirmEmail : environment.confirmEmail;
     if(environment.production && !isValidURL(clientUri)){
       this.toastr.error("Invalid ClientURI");
@@ -87,8 +88,4 @@ export class RegisterComponent implements OnInit {
     this.cancelRegister.emit(false);
   }
 
-  private getDateOnly(dob: string | undefined){
-    if(!dob) return;
-    return new Date(dob).toISOString().slice(0,10);
-  }
 }

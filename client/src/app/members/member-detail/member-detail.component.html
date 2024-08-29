@@ -63,6 +63,13 @@
                     [userEmailConfirmed]="user?.emailConfirmed" 
                     ></app-member-messages>
             </tab>
+            <tab heading="Workouts" (selectTab)="onTabActivated($event)">
+                <app-member-workout-log
+                    [username]="member.username"
+                    [renderForm]="renderWorkoutTab"
+                >
+                </app-member-workout-log>
+            </tab>
         </tabset>
     </div>
 </div>

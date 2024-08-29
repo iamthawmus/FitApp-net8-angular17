@@ -4,13 +4,27 @@
 @if(memberService.user?.emailConfirmed)
 {
     <div class="btn-group">
-        <button type="button" class="btn btn-primary">
-            View Calendar
+        <button type="button" class="btn btn-primary" (click)="toggleCalenderButton()">
+            Search Date
         </button>
         <button type="button" class="btn btn-primary" (click)="createWorkout()" [disabled]="(appUserWorkout != undefined)">
             Create Workout
         </button>
     </div>
+    @if(toggleCalenderForm){
+        <form [formGroup]="workoutDateForm" (ngSubmit)="findWorkout()" autocomplete="off">
+            <hr>
+            <app-date-picker
+                [formControl]="$any(workoutDateForm.controls['workoutDate'])"
+                [label]="'Select Workout Date'"
+                [maxDate]="maxDate"
+            >
+            </app-date-picker>
+            <div class="form-group text-center button-footer">
+                <button [disabled]="!workoutDateForm.valid" class="btn btn-success me-2" type="submit">Find Workout</button>
+            </div>
+        </form>
+    }
     @if(appUserWorkout)
     {
         <div class="container m-1">

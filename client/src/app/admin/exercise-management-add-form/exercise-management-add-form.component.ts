@@ -28,27 +28,11 @@ export class ExerciseManagementAddFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    if(this.workoutLogService.exercises.length == 0)
-      {
-        this.workoutLogService.getExercises().subscribe({
-          next: (response : Exercise[]) => {
-            if(response)
-            {
-              this.workoutLogService.exercises = response;
-              if(this.workoutLogService.exercises.length > 0)
-              {
-                this.workoutLogService.exercises.forEach((exercise, index) => {
-                  this.workoutLogService.exerciseMap.set(exercise.exerciseName, index);
-                  this.workoutLogService.exerciseMapById.set(exercise.exerciseID.toString(), index);
-                });
+    this.workoutLogService.checkCacheForExerciseList(this.setAvailableExercises);
+  }
 
-                this.availableExercises = [...this.workoutLogService.exerciseMap.keys()];
-
-              }
-            }
-          }
-        });
-      }
+  setAvailableExercises() {
+    this.availableExercises = [...this.workoutLogService.exerciseMap.keys()];
   }
 
   initializeForm() {

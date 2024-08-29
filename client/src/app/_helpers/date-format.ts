@@ -1,10 +1,14 @@
-export function getFormattedDate(date: Date | undefined) : string {
+export function getFormattedDate(date: Date | undefined | string) : string {
+    if(typeof(date) === "string"){
+        return date;
+    }
     var newdate = !date ? new Date() : date;
-    var dd = String(newdate.getDate()).padStart(2, '0');
-    var mm = String(newdate.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = newdate.getFullYear();
-    
-    let formattedDate = yyyy + '-' + mm +'-' + dd;
 
-    return formattedDate;
+    return newdate.toISOString().slice(0,10);
+    ;
 }
+
+export function getDateOnly(dob: string | undefined){
+    if(!dob) return;
+    return new Date(dob).toISOString().slice(0,10);
+  }

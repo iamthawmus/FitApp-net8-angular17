@@ -18,26 +18,9 @@ export class ExerciseManagementComponent implements OnInit {
   editMode = "";
   exercises : Exercise[] = [];
   ngOnInit(): void {
-    if(this.workoutLogService.exercises.length == 0)
-    {
-      this.workoutLogService.getExercises().subscribe({
-        next: (response : Exercise[]) => {
-          if(response)
-          {
-            this.workoutLogService.exercises = response;
-            if(this.workoutLogService.exercises.length > 0)
-            {
-              this.workoutLogService.exercises.forEach((exercise, index) => {
-                this.workoutLogService.exerciseMap.set(exercise.exerciseName, index);
-                this.workoutLogService.exerciseMapById.set(exercise.exerciseID.toString(), index);
-              });
-            }
-
-            this.exercises = this.workoutLogService.exercises;
-          }
-        }
-      });
-    }
+    this.workoutLogService.checkCacheForExerciseList(() => {
+      this.exercises = this.workoutLogService.exercises;
+    });
   }
   updateMode(mode : string){
     this.editMode = mode;
