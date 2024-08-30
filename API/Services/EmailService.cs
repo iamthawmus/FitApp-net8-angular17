@@ -12,9 +12,9 @@ public class EmailService(IResendClient resend) : IEmailService
     public async Task<ResendResponse<Guid>> SendEmailAsync(string email, string subject, string htmlMessage)
     {
         var message = new EmailMessage();
-        message.From = "DoNotReply@resend.dev";
+        message.From = "DoNotReply@the-fit-app.com";
         message.To.Add(email);
-        message.Subject = "Hello from FitApp! " + subject ;
+        message.Subject = "Hello from TheFitApp! " + subject ;
         message.HtmlBody = "<div> 👋🏻 " + htmlMessage +"</div>";
 
        var response = await _resend.EmailSendAsync( message );
