@@ -49,7 +49,7 @@ export class MemberChangeEmailComponent implements OnInit{
 
   intializeForm(){
     this.updateEmailForm  = this.fb.group({
-      newEmail: ['', [Validators.required, Validators.email]],
+      newEmail: ['', [Validators.required, Validators.email, Validators.maxLength(200)]],
       confirmNewEmail: ['', [Validators.required, Validators.email]],
     });
     this.updateEmailForm.controls['newEmail'].valueChanges.subscribe({

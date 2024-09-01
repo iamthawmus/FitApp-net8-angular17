@@ -41,7 +41,7 @@ export class ExerciseManagementAddFormComponent implements OnInit {
       workoutType: ['', [Validators.minLength(4), Validators.required]],
       muscleGroup: [''],
       equipmentRequired: [''],
-      description: ['']
+      description: ['', [Validators.maxLength(200)]]
     });
   }
 

@@ -1,4 +1,6 @@
-﻿namespace API.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace API.DTOs;
 
 public class MessageDto
 {
@@ -9,6 +11,7 @@ public class MessageDto
     public int RecipientId { get; set; }
     public required string RecipientUsername { get; set; }
     public required string RecipientPhotoUrl { get; set; }
+    [StringLength(200, ErrorMessage = "The {0} cannot exceed {1} characters.")]
     public required string Content { get; set; }
     public DateTime? DateRead { get; set; }
     public DateTime MessageSent { get; set; }

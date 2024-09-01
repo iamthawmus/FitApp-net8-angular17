@@ -8,12 +8,14 @@
                 <div class="d-flex mx-2">
                     <label class="col-form-label">Age from: </label>
                     <input type="number" class="form-control ms-1" style="width: 70px;" name="minAge"
-                        [(ngModel)]="memberService.userParams().minAge">
+                        [(ngModel)]="memberService.userParams().minAge"
+                        min="18">
                 </div>
                 <div class="d-flex mx-2">
                     <label class="col-form-label">Age to: </label>
                     <input type="number" class="form-control ms-1" style="width: 70px;" name="maxAge"
-                        [(ngModel)]="memberService.userParams().maxAge">
+                        [(ngModel)]="memberService.userParams().maxAge"
+                        min="18">
                 </div>
                 <div class="d-flex mx-2">
                     <label class="col-form-label">show: </label>
