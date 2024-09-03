@@ -17,11 +17,13 @@ import { ConfirmEmailComponent } from './authentication/confirm-email/confirm-em
 import { ConfirmEmailChangeComponent } from './authentication/confirm-email-change/confirm-email-change.component';
 import { WorkoutlogService } from './_services/workoutlog.service';
 import { WorkoutLogComponent } from './workout-log/workout-log/workout-log.component';
+import { WorkoutLogGuestComponent } from './workout-log-guest/workout-log-guest/workout-log-guest.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
     { path: 'confirm-email', component: ConfirmEmailComponent },
     { path: 'confirm-email-change', component: ConfirmEmailChangeComponent},
+    { path: 'guest-workout-log', component: WorkoutLogGuestComponent},
     {
         path: '',
         runGuardsAndResolvers:'always',

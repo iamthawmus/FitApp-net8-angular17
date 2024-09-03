@@ -2,6 +2,9 @@ import { Component, inject } from '@angular/core';
 import { RegisterComponent } from "../register/register.component";
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { InfoModalComponent } from '../modals/info-modal/info-modal.component';
+import { GlobalService } from '../_services/global.service';
+import { AccountService } from '../_services/account.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +15,9 @@ import { InfoModalComponent } from '../modals/info-modal/info-modal.component';
 })
 export class HomeComponent {
   private modalService = inject(BsModalService);
+  private accountService = inject(AccountService);
+  private router = inject(Router);
+  globalService = inject(GlobalService);
 
   registerMode = false;
   bsModalRef: BsModalRef<InfoModalComponent> = new BsModalRef<InfoModalComponent>();
@@ -24,6 +30,13 @@ export class HomeComponent {
     this.registerMode = event;
   }
   
+  startGuestMode(){
+    this.globalService.globalVariables.value.isGuestMode = true;
+    this.accountService.logout();
+    this.router.navigateByUrl('/guest-workout-log');
+
+  }
+
   openLearnMoreModal(){
     const config: ModalOptions = {
       initialState: {

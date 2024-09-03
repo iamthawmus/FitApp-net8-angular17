@@ -4,7 +4,7 @@ export function getFormattedDate(date: Date | undefined | string) : string {
     }
     var newdate = !date ? new Date() : date;
 
-    return newdate.toISOString().slice(0,10);
+    return newdate.toISOString().slice(0,10) + 'T00:00';
     ;
 }
 
