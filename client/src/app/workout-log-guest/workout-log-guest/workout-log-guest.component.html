@@ -1,0 +1,116 @@
+<div>
+    <h4>Guest Workout Log</h4>
+</div>
+<button class="btn btn-warning" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWarning" aria-expanded="false" aria-controls="collapseWarning">
+    View Warning!
+</button>
+<div class="collapse" id="collapseWarning">
+    <alert type="warning" class="alert">
+        <strong>Warning!</strong> All Log activities recorded during Guest Mode will only be saved to your current browser. If browsing data is deleted from your device then all workout logs will be deleted as well.
+    </alert>
+</div>
+<div class="btn-group">
+    <button type="button" class="btn btn-primary" (click)="toggleCalenderButton()">
+        Search Date
+    </button>
+    <button type="button" class="btn btn-primary" (click)="createWorkout()" [disabled]="(appUserWorkout != undefined)">
+        Create Workout
+    </button>
+</div>
+@if(toggleCalenderForm){
+<form [formGroup]="workoutDateForm" (ngSubmit)="findWorkout()" autocomplete="off">
+    <hr>
+    <app-date-picker [formControl]="$any(workoutDateForm.controls['workoutDate'])" [label]="'Select Workout Date'"
+        [maxDate]="maxDate">
+    </app-date-picker>
+    <div class="form-group text-center button-footer">
+        <button [disabled]="!workoutDateForm.valid" class="btn btn-success me-2" type="submit">Find Workout</button>
+    </div>
+</form>
+}
+@if(appUserWorkout)
+{
+<div class="container m-1">
+    <div class="mb-1">
+        <h3>{{formattedWorkoutDateStr}}</h3>
+        <h3>{{appUserWorkout.workoutName}}</h3>
+        <h3>{{appUserWorkout.description}}</h3>
+        <h3>{{appUserWorkout.notes}}</h3>
+    </div>
+    <div class="row">Start typing in an exercise:</div>
+    <div class="row">
+        <div class="col-sm mb-1">
+            <input [(ngModel)]="selectedExercise" [typeahead]="availableExercises" class="form-control">
+        </div>
+        <div class="col-sm">
+            <button type="button" class="btn btn-primary" (click)="addExerciseToUI()">
+                Add Exercise
+            </button>
+        </div>
+    </div>
+</div>
+@if(currentExercises.size > 0)
+{
+<div class="checkbox">
+    <label>
+        <input type="checkbox" [(ngModel)]="oneAtATime">
+        Open only one at a time
+    </label>
+</div>
+<accordion [closeOthers]="oneAtATime">
+    @for(exercise of currentExercises; track $index)
+    {
+    <accordion-group heading={{exercise.exerciseName}}>
+        <button type="button" class="btn btn-primary" (click)="toggleAddSetMode()">
+            Add Set
+        </button>
+        @if(addSetMode){
+        <app-workout-log-guest-set-form [exercise]="exercise" [appUserWorkout]="appUserWorkout"
+            (workoutSet)="addNewSet($event)" (cancelSet)="cancelAddSetMode($event)">
+        </app-workout-log-guest-set-form>
+        }
+        @for(set of getWorkoutSetFromExerciseId(exercise.id!); track $index)
+        {
+        <div class="row">
+            <div class="col-sm">
+                Set #{{$index + 1}}
+            </div>
+            @if(exercise.workoutType == "Cardio")
+            {
+            <div class="col-sm">Distance: {{set.distance}}</div>
+            <div class="col-sm">Duration in Minutes: {{set.durationInMinutes}}</div>
+            }
+            @else {
+            <div class="col-sm">Repetitions: {{set.repetitionsPerSet}}</div>
+            <div class="col-sm">Weight: {{set.weightPerRepetition}}</div>
+            }
+            <div class="col-sm">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-primary" (click)="toggleEditSetMode(set.id!)">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" (click)="deleteSet(set)">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        @if(editSetMode && set.id === editModeTargetId)
+        {
+        <div class="row">
+            <app-workout-log-guest-edit-form [workoutSet]="set" [exercise]="exercise"
+                (updatedWorkoutSet)="editSet($event)" (cancelEdit)="cancelEditSetMode($event)">
+            </app-workout-log-guest-edit-form>
+        </div>
+        }
+        }
+    </accordion-group>
+    }
+</accordion>
+}
+}
+@else {
+<div>
+    <h3>There is no current workout</h3>
+</div>
+}
