@@ -52,10 +52,10 @@ export class WorkoutLogSetFormComponent implements OnInit{
   }
 
   submit(){
-    let repetitionsPerSet = this.workoutSetForm.get('repetitionsPerSet')?.value;
-    let weightPerRepetition = this.workoutSetForm.get('weightPerRepetition')?.value;
-    let durationInMinutes = this.workoutSetForm.get('durationInMinutes')?.value;
-    let distance = this.workoutSetForm.get('distance')?.value;
+    let repetitionsPerSet = this.workoutSetForm.get('repetitionsPerSet')?.value - 0;
+    let weightPerRepetition = this.workoutSetForm.get('weightPerRepetition')?.value - 0;
+    let durationInMinutes = this.workoutSetForm.get('durationInMinutes')?.value - 0;
+    let distance = this.workoutSetForm.get('distance')?.value - 0;
     if(!this.exercise()){
       this.toastr.error("ExerciseId is undefined");
       return;

@@ -1,0 +1,49 @@
+<form [formGroup]="exerciseForm" (ngSubmit)="submit()" autocomplete="off">
+
+    <div>
+        <app-text-input [formControl]="$any(exerciseForm.controls['exerciseName'])" [label]="'Exercise Name'">
+        </app-text-input>
+    </div>
+    <div>
+        <app-select-menu-input
+            [formControl]="$any(exerciseForm.controls['workoutType'])"
+            [options]="workoutTypes"
+            [label]="'Workout Types'"
+        >
+        </app-select-menu-input>
+    </div>
+    <div>
+        <app-select-menu-input
+            [formControl]="$any(exerciseForm.controls['muscleGroup'])"
+            [options]="muscleGroups"
+            [label]="'Muscle Group'"
+        >
+        </app-select-menu-input> 
+    </div>
+    <div>
+        <app-select-menu-input
+            [formControl]="$any(exerciseForm.controls['equipmentRequired'])"
+            [options]="equipmentRequired"
+            [label]="'Equipment Required'"
+        >
+        </app-select-menu-input> 
+    </div>
+    <div>
+        <app-text-input [formControl]="$any(exerciseForm.controls['description'])" [label]="'Description'">
+        </app-text-input>
+    </div>
+    @if(validationErrors)
+    {
+    <div class="alert alert-danger text-start">
+        <ul>
+            @for (error of validationErrors; track $index){
+            <li>{{error}}</li>
+            }
+        </ul>
+    </div>
+    }
+    <div class="form-group text-center button-footer">
+        <button [disabled]="!exerciseForm.valid" class="btn btn-success me-2" type="submit">Create Exercise</button>
+        <button class="btn btn-warning me-2" (click)="cancel()" type="button">Cancel</button>
+    </div>
+</form>
