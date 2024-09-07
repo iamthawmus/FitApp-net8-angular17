@@ -5,7 +5,8 @@ import { AppUserWorkout, db, Exercise, WorkoutSet } from '../db/db';
   providedIn: 'root'
 })
 export class GuestWorkoutlogService {
-
+  exerciseList : Exercise[] = [];
+  
   getExercises(){
     return db.exercises.toArray();
   }

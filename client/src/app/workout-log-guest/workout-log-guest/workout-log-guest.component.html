@@ -9,12 +9,17 @@
         <strong>Warning!</strong> All Log activities recorded during Guest Mode will only be saved to your current browser. If browsing data is deleted from your device then all workout logs will be deleted as well.
     </alert>
 </div>
-<div class="btn-group">
+<div class="btn-group mb-1">
     <button type="button" class="btn btn-primary" (click)="toggleCalenderButton()">
         Search Date
     </button>
+    @if(appUserWorkout == undefined){
     <button type="button" class="btn btn-primary" (click)="createWorkout()" [disabled]="(appUserWorkout != undefined)">
         Create Workout
+    </button>
+    }
+    <button type="button" class="btn btn-primary" (click)="toggleCreateExerciseButton()">
+        Create Exercise
     </button>
 </div>
 @if(toggleCalenderForm){
@@ -27,6 +32,14 @@
         <button [disabled]="!workoutDateForm.valid" class="btn btn-success me-2" type="submit">Find Workout</button>
     </div>
 </form>
+}
+@if(toggleCreateExercise){
+<div class="container m-1">
+    <app-add-exercise-form
+        (cancelAdd)="cancelAddExercise($event)"
+    >     
+    </app-add-exercise-form>
+</div>
 }
 @if(appUserWorkout)
 {
@@ -61,7 +74,7 @@
     @for(exercise of currentExercises; track $index)
     {
     <accordion-group heading={{exercise.exerciseName}}>
-        <button type="button" class="btn btn-primary" (click)="toggleAddSetMode()">
+        <button type="button" class="btn btn-primary mb-1" (click)="toggleAddSetMode()">
             Add Set
         </button>
         @if(addSetMode){

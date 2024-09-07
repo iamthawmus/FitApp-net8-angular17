@@ -15,11 +15,12 @@ import { AppUserWorkout, Exercise, WorkoutSet } from '../../db/db';
 import { ConfirmDialogComponent } from '../../modals/confirm-dialog/confirm-dialog.component';
 import { WorkoutLogGuestSetFormComponent } from "../workout-log-guest-set-form/workout-log-guest-set-form.component";
 import { WorkoutLogGuestEditFormComponent } from "../workout-log-guest-edit-form/workout-log-guest-edit-form.component";
+import { AddExerciseFormComponent } from "../add-exercise-form/add-exercise-form.component";
 
 @Component({
   selector: 'app-workout-log-guest',
   standalone: true,
-  imports: [AccordionModule, FormsModule, TypeaheadModule, CommonModule, WorkoutLogSetFormComponent, WorkoutLogSetEditFormComponent, AlertModule, ReactiveFormsModule, DatePickerComponent, WorkoutLogGuestSetFormComponent, WorkoutLogGuestEditFormComponent],
+  imports: [AccordionModule, FormsModule, TypeaheadModule, CommonModule, WorkoutLogSetFormComponent, WorkoutLogSetEditFormComponent, AlertModule, ReactiveFormsModule, DatePickerComponent, WorkoutLogGuestSetFormComponent, WorkoutLogGuestEditFormComponent, AddExerciseFormComponent],
   templateUrl: './workout-log-guest.component.html',
   styleUrl: './workout-log-guest.component.css'
 })
@@ -44,13 +45,13 @@ export class WorkoutLogGuestComponent implements OnInit {
   workoutDateForm: FormGroup = new FormGroup({});
   maxDate = new Date();
   toggleCalenderForm = false;
+  toggleCreateExercise = false;
 
-  exerciseList : Exercise[] = [];
   ngOnInit(): void {
     this.guestWorkoutLogService.getExercises().then((list) => {
       if(list)
       {
-        this.exerciseList = list;
+        this.guestWorkoutLogService.exerciseList = list;
         list.forEach((exercise) => {
           this.availableExercises.push(exercise.exerciseName);
         });
@@ -115,13 +116,13 @@ export class WorkoutLogGuestComponent implements OnInit {
         this.toastr.error("No exercise selected")
         return;
       }
-      let newExerciseIndex = this.exerciseList.findIndex(
+      let newExerciseIndex = this.guestWorkoutLogService.exerciseList.findIndex(
           (exercise) => exercise.exerciseName.split(' ').join("").toUpperCase() == this.selectedExercise?.split(' ').join("").toUpperCase());
       if(newExerciseIndex < 0 || newExerciseIndex === undefined){
         this.toastr.error("No exercise of that name found");
         return;
       }
-      let newExercise = this.exerciseList[newExerciseIndex];
+      let newExercise = this.guestWorkoutLogService.exerciseList[newExerciseIndex];
       this.currentExercises.add(newExercise);
       if(newExercise.id && !this.workoutSetMap.has(newExercise.id.toString())){
         this.workoutSetMap.set(newExercise.id.toString(), []);
@@ -216,8 +217,8 @@ export class WorkoutLogGuestComponent implements OnInit {
       exerciseIds.add(value.exerciseID);
     });
     exerciseIds.forEach((value) => {
-      let index = this.exerciseList.findIndex((exercise) => exercise.id == value);
-      this.currentExercises.add(this.exerciseList[index]);
+      let index = this.guestWorkoutLogService.exerciseList.findIndex((exercise) => exercise.id == value);
+      this.currentExercises.add(this.guestWorkoutLogService.exerciseList[index]);
     });
   }
 
@@ -243,5 +244,13 @@ export class WorkoutLogGuestComponent implements OnInit {
 
   toggleCalenderButton(){
     this.toggleCalenderForm = !this.toggleCalenderForm;
+  }
+
+  toggleCreateExerciseButton(){
+    this.toggleCreateExercise = !this.toggleCreateExercise;
+  }
+
+  cancelAddExercise($event: boolean){
+    this.toggleCreateExercise = $event;
   }
 }

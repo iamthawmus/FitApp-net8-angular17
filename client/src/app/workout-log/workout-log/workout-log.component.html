@@ -3,13 +3,15 @@
 </div>
 @if(memberService.user?.emailConfirmed)
 {
-    <div class="btn-group">
+    <div class="btn-group mb-1">
         <button type="button" class="btn btn-primary" (click)="toggleCalenderButton()">
             Search Date
         </button>
+        @if(appUserWorkout == undefined){
         <button type="button" class="btn btn-primary" (click)="createWorkout()" [disabled]="(appUserWorkout != undefined)">
             Create Workout
         </button>
+        }
     </div>
     @if(toggleCalenderForm){
         <form [formGroup]="workoutDateForm" (ngSubmit)="findWorkout()" autocomplete="off">
@@ -61,7 +63,7 @@
                 @for(exercise of currentExercises; track $index)
                 {
                     <accordion-group heading={{exercise.exerciseName}}>
-                        <button type="button" class="btn btn-primary" (click)="toggleAddSetMode()">
+                        <button type="button" class="btn btn-primary mb-1" (click)="toggleAddSetMode()">
                             Add Set
                         </button>
                         @if(addSetMode){
