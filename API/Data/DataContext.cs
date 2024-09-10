@@ -18,6 +18,9 @@ IdentityUserToken<int>>(options)
     public DbSet<Exercise> Exercises { get; set; }
     public DbSet<AppUserWorkout> AppUserWorkouts { get; set; }
     public DbSet<WorkoutSet> WorkoutSets { get; set; }
+    public DbSet<AppUserFoodDiary> AppUserFoodDiaries { get; set; }
+    public DbSet<FoodDiaryEntry> FoodDiaryEntries { get; set; }
+    public DbSet<FoodItem> FoodItems { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -94,5 +97,26 @@ IdentityUserToken<int>>(options)
         builder.Entity<WorkoutSet>()
             .Property(we => we.WeightPerRepetition)
             .HasColumnType("decimal(5,2)");
+
+        // food diary entities
+        builder.Entity<FoodItem>()
+            .HasKey(fi => fi.FoodItemID);
+        builder.Entity<AppUserFoodDiary>()
+            .HasKey(fd => fd.AppUserFoodDiaryID);
+        builder.Entity<FoodDiaryEntry>()
+            .HasKey(fde => fde.FoodDiaryEntryID);
+        // food diary relationships
+        builder.Entity<AppUserFoodDiary>()
+            .HasOne(uw => uw.AppUser)
+            .WithMany(u => u.AppUserFoodDiaries)
+            .HasForeignKey(u => u.UserID);
+        builder.Entity<FoodDiaryEntry>()
+            .HasOne(ufde => ufde.AppUserFoodDiary)
+            .WithMany(f => f.FoodDiaryEntries)
+            .HasForeignKey(fd => fd.AppUserFoodDiaryID);
+        builder.Entity<FoodDiaryEntry>()
+            .HasOne(f => f.FoodItem)
+            .WithMany(fde => fde.FoodDiaryEntries)
+            .HasForeignKey(f => f.FoodItemID);
     }
 }

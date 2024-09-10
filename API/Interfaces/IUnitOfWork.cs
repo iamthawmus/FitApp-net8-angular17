@@ -11,6 +11,9 @@ public interface IUnitOfWork
     IExerciseRepository ExerciseRepository { get; }
     IWorkoutSetRepository WorkoutSetRepository { get; }
     IAppUserWorkoutRepository AppUserWorkoutRepository { get; }
+    IFoodItemRepository FoodItemRepository { get; }
+    IFoodDiaryEntryRepository FoodDiaryEntryRepository { get; }
+    IAppUserFoodDiaryRepository AppUserFoodDiaryRepository { get; }
     Task<bool> Complete();
     bool HasChanges();
 }

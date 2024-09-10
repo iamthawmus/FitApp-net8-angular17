@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using API.Data;
 using API.Data.Migrations;
+using API.FDC;
 using API.Helpers;
 using API.Interfaces;
 using API.Resend;
@@ -31,9 +32,13 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IExerciseRepository, ExerciseRepository>();
         services.AddScoped<IWorkoutSetRepository, WorkoutSetRepository>();
         services.AddScoped<IAppUserWorkoutRepository, AppUserWorkoutRepository>();
+        services.AddScoped<IFoodItemRepository, FoodItemRepository>();
+        services.AddScoped<IFoodDiaryEntryRepository, FoodDiaryRepository>();
+        services.AddScoped<IAppUserFoodDiaryRepository, AppUserFoodDiaryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<IFoodDataService, FoodDataService>();
         services.AddScoped<LogUserActivity>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
@@ -41,12 +46,13 @@ public static class ApplicationServiceExtensions
         services.AddSingleton<PresenceTracker>();
         services.AddOptions();
         services.AddHttpClient<ResendClient>();
+        services.AddHttpClient<FDCClient>();
         services.Configure<ResendClientOptions>( o =>
         {
             o.ApiToken = Environment.GetEnvironmentVariable( "ResendAPIKey" )!;
         } );
         services.AddTransient<IResendClient, ResendClient>();
-        
+        services.AddTransient<IFDCClient, FDCClient>();
         return services;
     }
 }

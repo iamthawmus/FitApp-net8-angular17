@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.FDC.Models;
 using AutoMapper;
 
 namespace API.Helpers;
@@ -25,5 +26,11 @@ public class AutoMapperProfiles : Profile
         CreateMap<UpdateExerciseDto, Exercise>();
         CreateMap<DateTime, DateTime>().ConvertUsing(d => DateTime.SpecifyKind(d, DateTimeKind.Utc));
         CreateMap<DateTime?, DateTime?>().ConvertUsing(d => d.HasValue ? DateTime.SpecifyKind(d.Value, DateTimeKind.Utc) : null);
+        CreateMap<Food, SearchFoodDto>();
+        CreateMap<FoodNutrient, FoodNutrientDto>();
+        CreateMap<FoodDiaryEntry, GetAppUserFoodDiaryEntryDto>();
+        CreateMap<AppUserFoodDiary, GetAppUserFoodDiaryDto>();
+        CreateMap<FoodItem, GetFoodItemsDto>();
+        CreateMap<UpdateFoodDiaryEntryDto, FoodDiaryEntry>();
     }
 }

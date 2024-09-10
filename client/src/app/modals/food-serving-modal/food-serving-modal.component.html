@@ -1,0 +1,57 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+</div>
+<div class="modal-body">
+    <p>{{message}}</p>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>{{food?.name}}</h5>
+            <div class="row">
+                <div class="col">Protein: {{calculatedProtein}}{{proteinUnit}}</div>
+                <div class="col">Carbs: {{calculatedCarbs}}{{carbUnit}}</div>
+                <div class="col">Fats: {{calculatedFats}}{{fatUnit}}</div>
+            </div>
+            <div class="row">
+                <div class="col">Energy: {{calculatedEnergy}}{{energyUnit}}</div>
+                <div class="col">Sugar: {{calculatedSugar}}{{sugarUnit}}</div>
+                <div class="col">Fiber: {{calculatedFiber}}{{fiberUnit}}</div>
+            </div>
+        </div>
+    </div>
+    <form [formGroup]="servingForm" autocomplete="off">
+        <div>
+            <app-select-menu-input
+                [formControl]="$any(servingForm.controls['meal'])"
+                [options]="meals"
+                [label]="'Meal'"
+                (change)="updateValues()"
+            >
+            </app-select-menu-input>
+        </div>
+        <div>
+            <app-text-input 
+                [formControl]="$any(servingForm.controls['numberOfServings'])" 
+                [label]="'Number of Servings'"
+                (change)="updateValues()"
+                >
+            </app-text-input>
+        </div>
+        <div>
+            <app-select-menu-input
+                [formControl]="$any(servingForm.controls['servingName'])"
+                [options]="servingNames"
+                [label]="'Serving Size'"
+                (change)="updateValues()"
+            >
+            </app-select-menu-input>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" (click)="submit()">
+        {{btnOkText}}
+    </button>
+    <button class="btn btn-danger" (click)="decline()">
+        {{btnCancelText}}
+    </button>
+</div>

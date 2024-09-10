@@ -18,6 +18,7 @@ import { ConfirmEmailChangeComponent } from './authentication/confirm-email-chan
 import { WorkoutlogService } from './_services/workoutlog.service';
 import { WorkoutLogComponent } from './workout-log/workout-log/workout-log.component';
 import { WorkoutLogGuestComponent } from './workout-log-guest/workout-log-guest/workout-log-guest.component';
+import { FoodDiaryComponent } from './food-diary/food-diary/food-diary.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -30,6 +31,7 @@ export const routes: Routes = [
         canActivate:[authGuard],
         children: [
             {path: 'workout-log', component: WorkoutLogComponent},
+            {path: 'food-diary', component: FoodDiaryComponent},
             {path: 'members', component: MemberListComponent},
             {path: 'members/:username', component: MemberDetailComponent, resolve: {member: memberDetailedResolver}},
             {path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedChangesGuard]},

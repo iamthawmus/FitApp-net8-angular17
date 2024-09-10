@@ -1,0 +1,20 @@
+<div class="card">
+    <div class="card-body">
+        <h5>{{foodItem().foodItem.name}}</h5>
+        <div class="row">
+            <div class="col">Energy: {{calculatedEnergy}}{{foodItem().foodItem.energyUnit}}</div>
+            <div class="col">Number of Servings: {{foodItem().numberOfServings}}</div>
+            <div class="col">Serving Size: {{servingSize}}</div>
+        </div>
+        <div class="row">
+            <div class="col">Protein: {{calculatedProtein}}{{foodItem().foodItem.proteinUnit}}</div>
+            <div class="col">Carbs: {{calculatedCarbs}}{{foodItem().foodItem.carbUnit}}</div>
+            <div class="col">Fats: {{calculatedFats}}{{foodItem().foodItem.fatUnit}}</div>
+        </div>
+        <div class="row">
+            <div class="col">Sugar: {{calculatedSugar}}{{foodItem().foodItem.sugarUnit}}</div>
+            <div class="col">Fiber: {{calculatedFiber}}{{foodItem().foodItem.fiberUnit}}</div>
+            <div class="col"></div>
+        </div>
+    </div>
+</div>
