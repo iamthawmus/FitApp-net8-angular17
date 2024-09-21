@@ -9,6 +9,8 @@ export function getFormattedDate(date: Date | undefined | string) : string {
 }
 
 export function getDateOnly(dob: string | undefined){
-    if(!dob) return;
+    if(!dob){
+        return new Date().toISOString().slice(0,10);
+    };
     return new Date(dob).toISOString().slice(0,10);
   }

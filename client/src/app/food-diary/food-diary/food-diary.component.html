@@ -1,0 +1,162 @@
+
+<div class="btn-group">
+    <button type="button" class="btn btn-primary" (click)="toggleCalenderButton()">
+        Search Date
+    </button>
+    <button type="button" class="btn btn-primary" (click)="startFoodDiary()" [disabled]="currentFoodDiary">
+        Start a new Food Diary
+    </button>
+</div>
+@if(toggleCalenderForm){
+    <form [formGroup]="foodDiaryDateForm" (ngSubmit)="findFoodDiaryByDate()" autocomplete="off">
+        <hr>
+        <app-date-picker
+            [formControl]="$any(foodDiaryDateForm.controls['foodDiaryDate'])"
+            [label]="'Select foodDiary Date'"
+            [maxDate]="maxDate"
+        >
+        </app-date-picker>
+        <div class="form-group text-center button-footer">
+            <button [disabled]="!foodDiaryDateForm.valid" class="btn btn-success me-2" type="submit">Find Food Diary</button>
+        </div>
+    </form>
+}
+@if(currentFoodDiary)
+{
+
+<div>
+    <h2>{{this.currentFoodDiary.foodDiaryDate}}</h2>
+    <h2>Today's Current Macros</h2>
+    <h3>Calories: {{getCurrentCalories()}}</h3>
+    <div class="row">
+        <div class="col">Protein: {{getCurrentProtein()}}g</div>
+        <div class="col">Carbs: {{getCurrentCarb()}}g</div>
+        <div class="col">Fats: {{getCurrentFat()}}g</div>
+    </div>
+    <div class="row">
+        <div class="col">Sugar: {{getCurrentSugar()}}g</div>
+        <div class="col">Fiber: {{getCurrentFiber()}}g</div>
+        <div class="col"></div>
+    </div>
+</div>
+<div class="checkbox">
+    <label>
+        <input type="checkbox" [(ngModel)]="oneAtATime">
+        Open only one at a time
+    </label>
+</div>
+<accordion [closeOthers]="oneAtATime">
+    <accordion-group heading="Breakfast">
+        @for(food of this.currentFoodDiary.foodDiaryEntries; track $index)
+        {
+            @if(food.meal == "Breakfast"){
+                <app-food-diary-card
+                [foodItem]="food"
+                ></app-food-diary-card>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-warning" (click)="editItem(food, $index)">
+                        Edit Food
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="deleteItem(food, $index)">
+                        Delete Food
+                    </button>
+                </div>
+            }
+        }
+    </accordion-group>
+    <accordion-group heading="Lunch">
+        @for(food of this.currentFoodDiary.foodDiaryEntries; track $index)
+        {
+            @if(food.meal == "Lunch"){
+                <app-food-diary-card
+                [foodItem]="food"
+                ></app-food-diary-card>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-warning" (click)="editItem(food, $index)">
+                        Edit Food
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="deleteItem(food, $index)">
+                        Delete Food
+                    </button>
+                </div>
+            }
+        }
+    </accordion-group>
+    <accordion-group heading="Dinner">
+        @for(food of this.currentFoodDiary.foodDiaryEntries; track $index)
+        {
+            @if(food.meal == "Dinner"){
+                <app-food-diary-card
+                [foodItem]="food"
+                ></app-food-diary-card>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-warning" (click)="editItem(food, $index)">
+                        Edit Food
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="deleteItem(food, $index)">
+                        Delete Food
+                    </button>
+                </div>
+            }
+        }
+    </accordion-group>
+    <accordion-group heading="Snacks">
+        @for(food of this.currentFoodDiary.foodDiaryEntries; track $index)
+        {
+            @if(food.meal == "Snacks"){
+                <app-food-diary-card
+                [foodItem]="food"
+                ></app-food-diary-card>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-warning" (click)="editItem(food, $index)">
+                        Edit Food
+                    </button>
+                    <button type="button" class="btn btn-danger" (click)="deleteItem(food, $index)">
+                        Delete Food
+                    </button>
+                </div>
+            }
+        }
+    </accordion-group>
+</accordion>
+
+<div class="row m-1">Start typing in a food item:</div>
+<div class="row">
+    <div class="col-sm mb-1">
+        <input [(ngModel)]="selectedFood" [typeahead]="typeaheadFoodList" class="form-control">
+    </div>
+    <div class="col-sm btn-group">
+        <button type="button" class="btn btn-primary" (click)="addFood()">
+            Add Food
+        </button>
+        <button type="button" class="btn btn-primary" (click)="queryFood()">
+            Search Food
+        </button>
+    </div>
+</div>
+@if(this.searchResultsList.length > 0)
+{
+<div>
+    <h3>Search Results: </h3>
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSearch"
+        aria-expanded="false" aria-controls="collapseSearch">
+        Show/Hide results
+    </button>
+    <div class="collapse" id="collapseSearch">
+        @for(food of this.searchResultsList; track $index)
+        {
+        <div>
+            <h4>{{food.name}}</h4>
+            <button class="btn btn-secondary" type="button" 
+                aria-expanded="false"
+                (click)="openFoodServingModal(food)"
+                >
+                Add to Diary
+            </button>
+        </div>
+        }
+    </div>
+</div>
+}
+
+}
